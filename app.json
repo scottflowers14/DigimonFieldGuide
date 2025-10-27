@@ -38,11 +38,31 @@
             "backgroundColor": "#000000"
           }
         }
+      ],
+      [
+        "expo-font",
+        {
+          "fonts": [
+            "./assets/fonts/PixelDigivolve.tff"
+          ],
+          "ios": {
+            "fonts": [
+              "./assets/fonts/PixelDigivolve.tff"
+            ]
+          }
+        }
       ]
     ],
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
-    }
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "de77e6bb-710f-4de1-ba73-319a01ef4707"
+      }
+    },
+    "owner": "scottflowers14"
   }
 }
