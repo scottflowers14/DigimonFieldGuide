@@ -125,7 +125,7 @@ export function DigimonCard({
             height: '70%',
             backgroundColor: getStatusColor(status),
             borderRadius: 8,
-            opacity: 0.3,
+            opacity: status !== 'uncaught' ? 0.8 : 0.3,
           }}
         >
           <Image

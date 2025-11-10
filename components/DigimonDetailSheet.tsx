@@ -105,7 +105,7 @@ export function DigimonDetailSheet({
         <Image
           // @ts-expect-error readonly number doesn't play well with number
           source={digimonIcons[digimon?.timeStrangerNumber]}
-          style={{ width: '100%', height: '100%' }}
+          style={{ width: '100%', height: '100%', resizeMode: 'cover' }}
         />
       </View>
 
