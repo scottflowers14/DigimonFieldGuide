@@ -80,9 +80,8 @@ export const Theme = {
         width: 0,
         height: 4,
       },
-      shadowOpacity: 0.3,
-      shadowRadius: 8,
-      elevation: 6,
+      shadowOpacity: 0.25,
+      shadowRadius: 4,
     },
   },
   glow: {

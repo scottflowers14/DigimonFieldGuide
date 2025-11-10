@@ -16,13 +16,15 @@ type DigimonStatus = 'caught' | 'living' | 'uncaught';
 type FilterType = 'all' | 'caught' | 'living' | 'uncaught';
 
 export default function Index() {
-  // Constants
+  // State
   const [digimonStatuses, setDigimonStatuses] = useState<
     Record<number, DigimonStatus>
   >({});
   const [searchText, setSearchText] = useState<string | undefined>();
   const [filter, setFilter] = useState<FilterType>('all');
   const [selectedDigimon, setSelectedDigimon] = useState<any>(null);
+
+  // Constants
   const { version } = expo;
 
   // Refs
@@ -171,7 +173,7 @@ export default function Index() {
         </Text>
         {/* Stats Section */}
         <LinearGradient
-          colors={[Theme.colors.background, `${Theme.colors.background}10`]}
+          colors={[Theme.colors.background, `${Theme.colors.background}01`]}
           style={{
             gap: Theme.spacing.xs,
             position: 'absolute',
@@ -329,13 +331,13 @@ export default function Index() {
           }}
         />
         <LinearGradient
-          colors={[`${Theme.colors.background}10`, Theme.colors.background]}
+          colors={[`${Theme.colors.background}01`, Theme.colors.background]}
           style={{
             flexDirection: 'row',
             justifyContent: 'space-around',
             gap: Theme.spacing.xs,
             position: 'absolute',
-            height: 80,
+            height: 67,
             bottom: 0,
             zIndex: 2,
             width: '100%',
@@ -345,7 +347,7 @@ export default function Index() {
         {/* Detail Sheet */}
         <BottomSheet
           ref={bottomSheetRef}
-          snapPoints={['81%']}
+          snapPoints={['72.5%']}
           enablePanDownToClose
           enableDynamicSizing={false}
           index={-1}

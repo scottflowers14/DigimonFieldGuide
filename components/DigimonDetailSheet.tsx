@@ -56,11 +56,38 @@ export function DigimonDetailSheet({
         backgroundColor: Theme.colors.backgroundSecondary,
         borderTopLeftRadius: 20,
         borderTopRightRadius: 20,
-        paddingTop: Theme.spacing.md,
+        paddingTop: Theme.spacing.sm,
         paddingBottom: Theme.spacing.lg,
         flex: 1,
       }}
     >
+      {/* Status Badge */}
+      <View
+        style={{
+          marginHorizontal: Theme.spacing.sm,
+          marginBottom: Theme.spacing.sm,
+          padding: Theme.spacing.sm,
+          backgroundColor: getStatusColor(status),
+          borderRadius: Theme.borderRadius.card,
+          borderWidth: 2,
+          borderColor: getStatusBorder(status),
+          alignItems: 'center',
+        }}
+      >
+        <Text
+          style={{
+            color:
+              getStatusColor(status) === Theme.colors.status.uncaught.background
+                ? Theme.colors.text.primary
+                : '#1A1F3A',
+            fontSize: 16,
+            fontWeight: 'bold',
+            textTransform: 'uppercase',
+          }}
+        >
+          {status === 'uncaught' ? 'Not Caught' : status.toUpperCase()}
+        </Text>
+      </View>
       {/* Large Image Placeholder */}
       <View
         style={{
@@ -68,7 +95,7 @@ export function DigimonDetailSheet({
           backgroundColor: getStatusColor(status),
           marginHorizontal: Theme.spacing.md,
           borderRadius: Theme.borderRadius.card,
-          marginBottom: Theme.spacing.md,
+          marginBottom: Theme.spacing.sm,
           justifyContent: 'center',
           alignItems: 'center',
           borderWidth: 3,
@@ -90,7 +117,7 @@ export function DigimonDetailSheet({
             flexDirection: 'row',
             justifyContent: 'space-between',
             alignItems: 'center',
-            marginBottom: Theme.spacing.md,
+            marginBottom: Theme.spacing.sm,
           }}
         >
           <Text
@@ -129,34 +156,6 @@ export function DigimonDetailSheet({
           <InfoRow label="Type" value={digimon.type} />
           <InfoRow label="Base Personality" value={digimon.basePersonality} />
         </View>
-
-        {/* Status Badge */}
-        <View
-          style={{
-            marginTop: Theme.spacing.md,
-            padding: Theme.spacing.md,
-            backgroundColor: getStatusColor(status),
-            borderRadius: Theme.borderRadius.card,
-            borderWidth: 2,
-            borderColor: getStatusBorder(status),
-            alignItems: 'center',
-          }}
-        >
-          <Text
-            style={{
-              color:
-                getStatusColor(status) ===
-                Theme.colors.status.uncaught.background
-                  ? Theme.colors.text.primary
-                  : '#1A1F3A',
-              fontSize: 16,
-              fontWeight: 'bold',
-              textTransform: 'uppercase',
-            }}
-          >
-            {status === 'uncaught' ? 'Not Caught' : status.toUpperCase()}
-          </Text>
-        </View>
       </View>
     </View>
   );
@@ -168,7 +167,7 @@ function InfoRow({ label, value }: { label: string; value: string | number }) {
       style={{
         flexDirection: 'row',
         justifyContent: 'space-between',
-        paddingVertical: Theme.spacing.sm,
+        paddingVertical: 4,
         borderBottomWidth: 1,
         borderBottomColor: Theme.colors.status.uncaught.background,
       }}
