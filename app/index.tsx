@@ -3,7 +3,14 @@ import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { LinearGradient } from 'expo-linear-gradient';
 import React, { useEffect, useState } from 'react';
-import { FlatList, Pressable, Text, TextInput, View } from 'react-native';
+import {
+  FlatList,
+  Keyboard,
+  Pressable,
+  Text,
+  TextInput,
+  View,
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { expo } from '../app.json';
 import { DigimonCard } from '../components/DigimonCard';
@@ -51,6 +58,8 @@ export default function Index() {
   };
 
   const handleLongPress = (digimon: any) => {
+    Keyboard.dismiss();
+
     setSelectedDigimon(digimon);
 
     setTimeout(() => {
@@ -59,6 +68,8 @@ export default function Index() {
   };
 
   const handleCardPress = (digimonNumber: number) => {
+    Keyboard.dismiss();
+
     const currentStatus = digimonStatuses[digimonNumber] || 'uncaught';
     let nextStatus: DigimonStatus;
 
@@ -218,6 +229,12 @@ export default function Index() {
               spellCheck={false}
             />
             <Pressable
+              style={{
+                height: 44,
+                width: 44,
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}
               onPress={() => {
                 setSearchText(undefined);
               }}
@@ -309,6 +326,7 @@ export default function Index() {
           numColumns={4}
           keyExtractor={(item) => item.digimonNumber.toString()}
           showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps
           columnWrapperStyle={{
             justifyContent: 'flex-start',
             paddingHorizontal: Theme.spacing.xs,
