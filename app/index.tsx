@@ -1,8 +1,11 @@
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { LinearGradient } from 'expo-linear-gradient';
 import React, { useEffect, useState } from 'react';
-import { FlatList, Text, View } from 'react-native';
+import { FlatList, Pressable, Text, TextInput, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { expo } from '../app.json';
 import { DigimonCard } from '../components/DigimonCard';
 import { DigimonDetailSheet } from '../components/DigimonDetailSheet';
 import { StatButton } from '../components/StatButton';
@@ -17,17 +20,15 @@ export default function Index() {
   const [digimonStatuses, setDigimonStatuses] = useState<
     Record<number, DigimonStatus>
   >({});
+  const [searchText, setSearchText] = useState<string | undefined>();
   const [filter, setFilter] = useState<FilterType>('all');
   const [selectedDigimon, setSelectedDigimon] = useState<any>(null);
+  const { version } = expo;
 
   // Refs
   const bottomSheetRef = React.useRef<BottomSheet>(null);
 
-  // Load saved statuses on mount
-  useEffect(() => {
-    loadStatuses();
-  }, []);
-
+  // Functions
   const loadStatuses = async () => {
     try {
       const savedData = await AsyncStorage.getItem('digimonStatuses');
@@ -45,6 +46,14 @@ export default function Index() {
     } catch (error) {
       console.error('Error saving statuses:', error);
     }
+  };
+
+  const handleLongPress = (digimon: any) => {
+    setSelectedDigimon(digimon);
+
+    setTimeout(() => {
+      bottomSheetRef.current?.snapToIndex(0);
+    }, 250);
   };
 
   const handleCardPress = (digimonNumber: number) => {
@@ -75,31 +84,41 @@ export default function Index() {
     saveStatuses(updatedStatuses);
   };
 
-  const handleLongPress = (digimon: any) => {
-    bottomSheetRef.current?.snapToIndex(0);
-    setSelectedDigimon(digimon);
-  };
-
   const handleCloseDetailSheet = () => {
     bottomSheetRef?.current?.close();
   };
 
-  // Filter digimon based on active filter
-  const filteredDigimon = DIGIMON_LIST.filter((digimon) => {
-    const status = digimonStatuses[digimon.digimonNumber] || 'uncaught';
+  // Memos
+  const filteredDigimon = React.useMemo(
+    () =>
+      DIGIMON_LIST.filter((digimon) => {
+        const status = digimonStatuses[digimon.digimonNumber] || 'uncaught';
 
-    if (filter === 'all') return true;
-    if (filter === 'caught') {
-      return status === 'caught' || status === 'living';
-    }
-    if (filter === 'living') {
-      return status === 'living';
-    }
-    if (filter === 'uncaught') {
-      return status === 'uncaught';
-    }
-    return true;
-  });
+        if (searchText && /^\d+$/.test(searchText)) {
+          if (digimon.digimonNumber !== Number(searchText)) return false;
+        } else if (searchText) {
+          if (!digimon.name.includes(searchText)) return false;
+        }
+
+        if (filter === 'all') return true;
+        if (filter === 'caught') {
+          return status === 'caught' || status === 'living';
+        }
+        if (filter === 'living') {
+          return status === 'living';
+        }
+        if (filter === 'uncaught') {
+          return status === 'uncaught';
+        }
+        return true;
+      }),
+    [digimonStatuses, filter, searchText]
+  );
+
+  // Effects
+  useEffect(() => {
+    loadStatuses();
+  }, []);
 
   return (
     <SafeAreaView
@@ -120,86 +139,169 @@ export default function Index() {
             marginVertical: Theme.spacing.md,
             textAlign: 'center',
             fontFamily: 'PixelDigivolve',
+            paddingBottom: 0,
+            marginBottom: 0,
           }}
         >
-          Digimon Field Guide
+          Field Guide
+        </Text>
+        <Text
+          style={{
+            ...Theme.typography.h2,
+            textAlign: 'center',
+            fontFamily: 'PixelDigivolve',
+            paddingTop: 0,
+            marginTop: 0,
+          }}
+        >
+          Digimon Story: Time Stranger
+        </Text>
+        <Text
+          style={{
+            fontSize: Theme.typography.cardTitle.fontSize,
+            color: Theme.typography.h2.color,
+            textAlign: 'center',
+            fontFamily: 'PixelDigivolve',
+            paddingTop: 0,
+            marginTop: 0,
+            marginBottom: 8,
+          }}
+        >
+          {`Version ${version}`}
         </Text>
         {/* Stats Section */}
-        <View
+        <LinearGradient
+          colors={[Theme.colors.background, `${Theme.colors.background}10`]}
           style={{
-            flexDirection: 'row',
-            justifyContent: 'space-around',
-            marginBottom: Theme.spacing.lg,
-            marginHorizontal: Theme.spacing.md,
             gap: Theme.spacing.xs,
+            position: 'absolute',
+            paddingHorizontal: 20,
+            marginTop: '22.5%',
+            zIndex: 2,
+            justifyContent: 'center',
+            alignItems: 'center',
+            width: '100%',
           }}
         >
-          <StatButton
-            label="Caught"
-            count={
-              Object.values(digimonStatuses).filter(
-                (s) => s === 'caught' || s === 'living'
-              ).length
-            }
-            total={DIGIMON_LIST.length}
-            percentage={Math.round(
-              (Object.values(digimonStatuses).filter(
-                (s) => s === 'caught' || s === 'living'
-              ).length /
-                DIGIMON_LIST.length) *
-                100 || 0
-            )}
-            color={Theme.colors.status.caught.accent}
-            isActive={filter === 'caught'}
-            filterType={filter}
-            onPress={() => setFilter(filter === 'caught' ? 'all' : 'caught')}
-          />
+          <View
+            style={{
+              backgroundColor: Theme.colors.backgroundSecondary,
+              width: '80%',
+              height: 44,
+              borderRadius: Theme.borderRadius.card,
+              paddingHorizontal: 8,
+              flexDirection: 'row',
+              alignItems: 'center',
+            }}
+          >
+            <MaterialIcons
+              name="search"
+              size={24}
+              color={Theme.colors.background}
+            />
+            <TextInput
+              value={searchText}
+              onChangeText={(val) => setSearchText(val)}
+              style={{
+                ...Theme.typography.cardTitle,
+                fontSize: 12,
+                color: Theme.colors.text.secondary,
+                flex: 1,
+                paddingHorizontal: 4,
+              }}
+              placeholder="Search for digimon..."
+              placeholderTextColor={Theme.colors.text.tertiary}
+              autoCapitalize={'words'}
+              autoCorrect={false}
+              spellCheck={false}
+            />
+            <Pressable
+              onPress={() => {
+                setSearchText(undefined);
+              }}
+            >
+              <MaterialIcons
+                name="clear"
+                size={24}
+                color={Theme.colors.background}
+              />
+            </Pressable>
+          </View>
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'space-around',
+              width: '100%',
+              paddingTop: 8,
+            }}
+          >
+            <StatButton
+              label="Caught"
+              count={
+                Object.values(digimonStatuses).filter(
+                  (s) => s === 'caught' || s === 'living'
+                ).length
+              }
+              total={DIGIMON_LIST.length}
+              percentage={Math.round(
+                (Object.values(digimonStatuses).filter(
+                  (s) => s === 'caught' || s === 'living'
+                ).length /
+                  DIGIMON_LIST.length) *
+                  100 || 0
+              )}
+              color={Theme.colors.status.caught.accent}
+              isActive={filter === 'caught'}
+              filterType={filter}
+              onPress={() => setFilter(filter === 'caught' ? 'all' : 'caught')}
+            />
 
-          <StatButton
-            label="Living"
-            count={
-              Object.values(digimonStatuses).filter((s) => s === 'living')
-                .length
-            }
-            total={DIGIMON_LIST.length}
-            percentage={Math.round(
-              (Object.values(digimonStatuses).filter((s) => s === 'living')
-                .length /
-                DIGIMON_LIST.length) *
-                100 || 0
-            )}
-            color={Theme.colors.status.living.accent}
-            isActive={filter === 'living'}
-            filterType={filter}
-            onPress={() => setFilter(filter === 'living' ? 'all' : 'living')}
-          />
+            <StatButton
+              label="Living"
+              count={
+                Object.values(digimonStatuses).filter((s) => s === 'living')
+                  .length
+              }
+              total={DIGIMON_LIST.length}
+              percentage={Math.round(
+                (Object.values(digimonStatuses).filter((s) => s === 'living')
+                  .length /
+                  DIGIMON_LIST.length) *
+                  100 || 0
+              )}
+              color={Theme.colors.status.living.accent}
+              isActive={filter === 'living'}
+              filterType={filter}
+              onPress={() => setFilter(filter === 'living' ? 'all' : 'living')}
+            />
 
-          <StatButton
-            label="Uncaught"
-            count={(() => {
-              const caughtOrLiving = Object.values(digimonStatuses).filter(
-                (s) => s === 'caught' || s === 'living'
-              ).length;
-              return DIGIMON_LIST.length - caughtOrLiving;
-            })()}
-            total={DIGIMON_LIST.length}
-            percentage={(() => {
-              const caughtOrLiving = Object.values(digimonStatuses).filter(
-                (s) => s === 'caught' || s === 'living'
-              ).length;
-              const uncaughtCount = DIGIMON_LIST.length - caughtOrLiving;
-              return Math.round(
-                (uncaughtCount / DIGIMON_LIST.length) * 100 || 0
-              );
-            })()}
-            color={Theme.colors.text.secondary}
-            isActive={filter === 'uncaught'}
-            filterType={filter}
-            onPress={() =>
-              setFilter(filter === 'uncaught' ? 'all' : 'uncaught')
-            }
-          />
-        </View>
+            <StatButton
+              label="Uncaught"
+              count={(() => {
+                const caughtOrLiving = Object.values(digimonStatuses).filter(
+                  (s) => s === 'caught' || s === 'living'
+                ).length;
+                return DIGIMON_LIST.length - caughtOrLiving;
+              })()}
+              total={DIGIMON_LIST.length}
+              percentage={(() => {
+                const caughtOrLiving = Object.values(digimonStatuses).filter(
+                  (s) => s === 'caught' || s === 'living'
+                ).length;
+                const uncaughtCount = DIGIMON_LIST.length - caughtOrLiving;
+                return Math.round(
+                  (uncaughtCount / DIGIMON_LIST.length) * 100 || 0
+                );
+              })()}
+              color={Theme.colors.text.secondary}
+              isActive={filter === 'uncaught'}
+              filterType={filter}
+              onPress={() =>
+                setFilter(filter === 'uncaught' ? 'all' : 'uncaught')
+              }
+            />
+          </View>
+        </LinearGradient>
         <FlatList
           data={filteredDigimon}
           numColumns={4}
@@ -210,7 +312,7 @@ export default function Index() {
             paddingHorizontal: Theme.spacing.xs,
           }}
           contentContainerStyle={{
-            paddingBottom: Theme.spacing.md,
+            paddingTop: '33.3%',
           }}
           renderItem={({ item }) => {
             const status = digimonStatuses[item.digimonNumber] || 'uncaught';
@@ -225,6 +327,20 @@ export default function Index() {
               />
             );
           }}
+        />
+        <LinearGradient
+          colors={[`${Theme.colors.background}10`, Theme.colors.background]}
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'space-around',
+            gap: Theme.spacing.xs,
+            position: 'absolute',
+            height: 80,
+            bottom: 0,
+            zIndex: 2,
+            width: '100%',
+          }}
+          pointerEvents="none"
         />
         {/* Detail Sheet */}
         <BottomSheet

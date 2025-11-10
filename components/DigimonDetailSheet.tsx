@@ -75,31 +75,8 @@ export function DigimonDetailSheet({
           borderColor: getStatusBorder(status),
         }}
       >
-        {/* <Text
-          style={{
-            color:
-              status === 'caught' || status === 'living'
-                ? Theme.colors.text.primary
-                : Theme.colors.text.secondary,
-            fontSize: 18,
-            fontWeight: 'bold',
-          }}
-        >
-          {digimon.name}
-        </Text>
-        <Text
-          style={{
-            color:
-              status === 'caught' || status === 'living'
-                ? Theme.colors.text.tertiary
-                : Theme.colors.text.tertiary,
-            fontSize: 12,
-            marginTop: Theme.spacing.xs,
-          }}
-        >
-          Image Placeholder
-        </Text> */}
         <Image
+          // @ts-expect-error readonly number doesn't play well with number
           source={digimonIcons[digimon?.timeStrangerNumber]}
           style={{ width: '100%', height: '100%' }}
         />

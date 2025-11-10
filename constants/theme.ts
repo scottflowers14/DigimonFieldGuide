@@ -44,6 +44,11 @@ export const Theme = {
       fontWeight: 'bold' as const,
       color: '#FFFFFF',
     },
+    h2: {
+      fontSize: 16,
+      fontWeight: 'bold' as const,
+      color: '#B8C5D6',
+    },
     cardTitle: {
       fontSize: 11,
       fontWeight: '700' as const,

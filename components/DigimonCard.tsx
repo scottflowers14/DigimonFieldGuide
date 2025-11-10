@@ -129,6 +129,7 @@ export function DigimonCard({
           }}
         >
           <Image
+            // @ts-expect-error readonly number doesn't play well with number
             source={digimonIcons[timeStrangerNumber]}
             style={{ width: '100%', height: '100%' }}
           />

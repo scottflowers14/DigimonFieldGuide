@@ -1,15 +1,19 @@
 {
   "expo": {
     "name": "DigimonFieldGuide",
-    "slug": "DigimonFieldGuide",
-    "version": "1.0.0",
+    "slug": "digimonfieldguide",
+    "version": "0.25.2",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "digimonfieldguide",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.scottflowers14.digimonfieldguide",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -43,11 +47,11 @@
         "expo-font",
         {
           "fonts": [
-            "./assets/fonts/PixelDigivolve.tff"
+            "./assets/fonts/PixelDigivolve.ttf"
           ],
           "ios": {
             "fonts": [
-              "./assets/fonts/PixelDigivolve.tff"
+              "./assets/fonts/PixelDigivolve.ttf"
             ]
           }
         }
